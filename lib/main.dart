@@ -1,4 +1,4 @@
-import 'package:f_provider/providers/theme_provider.dart';
+import 'package:f_provider/providers/slider_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -14,26 +14,28 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ChangeNotifierProvider(create: (context) => SliderProvider()),
       ],
       child: MaterialApp(
         title: 'Flutter Demo',
         debugShowCheckedModeBanner: false,
-        // theme: Provider.of<ThemeProvider>(context).getIsDark?ThemeData.dark() : ThemeData.light(),
         home: HomePage(),
       ),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
   @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+
+  @override
   Widget build(BuildContext context) {
-    final ThemeProvider theme =
-        Provider.of<ThemeProvider>(context, listen: false);
-    // final ThemeProvider theme = context.watch<ThemeProvider>();
     print("build");
 
     return Scaffold(
@@ -47,19 +49,15 @@ class HomePage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Text(context.watch<ThemeProvider>().getIsDark ? "Dark" : "Light"),
-          Consumer<ThemeProvider>(
-            builder: (context, value, child) {
-              return Text(
-                  value.getIsDark ? "Dark" : "Light");
-            },
-          ),
-          const SizedBox(),
-          TextButton(
-            onPressed: () {
-              theme.changeTheme();
-            },
-            child: const Text("change theme"),
+          Consumer<SliderProvider>(
+            builder: (context, value, child) => Slider(
+              min: 0,
+              max: 1,
+              value: value.getValue,
+              onChanged: (val) {
+                value.changeValue(val);
+              },
+            ),
           ),
         ],
       ),
