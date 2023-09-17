@@ -13,16 +13,19 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => ThemeProvider()),
-      ],
-      child: MaterialApp(
-        title: 'Flutter Demo',
-        debugShowCheckedModeBanner: false,
-        // theme: Provider.of<ThemeProvider>(context).getIsDark?ThemeData.dark() : ThemeData.light(),
-        home: HomePage(),
-      ),
-    );
+        providers: [
+          ChangeNotifierProvider(create: (context) => ThemeProvider()),
+        ],
+        child: Consumer<ThemeProvider>(
+          builder: (context, value, child) => MaterialApp(
+            title: 'Flutter Demo',
+            debugShowCheckedModeBanner: false,
+            theme: value.getIsDark
+                ? ThemeData.dark()
+                : ThemeData.light(),
+            home: HomePage(),
+          ),
+        ));
   }
 }
 
@@ -33,7 +36,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeProvider theme =
         Provider.of<ThemeProvider>(context, listen: false);
-    // final ThemeProvider theme = context.watch<ThemeProvider>();
+
     print("build");
 
     return Scaffold(
@@ -47,11 +50,9 @@ class HomePage extends StatelessWidget {
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // Text(context.watch<ThemeProvider>().getIsDark ? "Dark" : "Light"),
           Consumer<ThemeProvider>(
             builder: (context, value, child) {
-              return Text(
-                  value.getIsDark ? "Dark" : "Light");
+              return Text(value.getIsDark ? "Dark" : "Light");
             },
           ),
           const SizedBox(),
